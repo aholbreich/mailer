@@ -1,0 +1,18 @@
+language: bash
+
+sudo: required
+
+services:
+  - docker
+
+script:
+  - docker run -it -v $(pwd):/root/sources -w /root/sources maven:3.3.3-jdk-8 mvn clean package
+  - docker build -t n2ru/mailer:latest .
+  - docker tag n2ru/mailer:latest n2ru/mailer:"$TRAVIS_TAG"
+  - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+  - docker push n2ru/tagcloud:latest
+  - docker push n2ru/tagcloud:"$TRAVIS_TAG"
+  
+cache:
+  directories:
+  - $HOME/.m2
