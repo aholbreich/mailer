@@ -1,6 +1,6 @@
 FROM java:8-jre
 VOLUME /tmp
-ADD target/mailer-0.0.1-SNAPSHOT.jar app.jar
+ADD target/mailer-0.0.3-SNAPSHOT.jar app.jar
 #Jus to have modification time.
 RUN bash -c 'touch /app.jar' 
 EXPOSE 8080
