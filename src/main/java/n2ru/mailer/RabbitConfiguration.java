@@ -19,15 +19,30 @@ public class RabbitConfiguration {
 
 	private String password;
 	private String user;
+	private String host;
 
 	@Bean
 	public ConnectionFactory connectionFactory() {
 
-		CachingConnectionFactory factory = new CachingConnectionFactory("localhost");
+		CachingConnectionFactory factory = new CachingConnectionFactory(getHost());
 		factory.setUsername(getUser());
 		factory.setPassword(getPassword());
 
 		return factory;
+	}
+	
+	private String getHost() {
+		if (this.host == null) {
+			this.host = System.getenv("RABBIT_HOST");
+			if (this.host == null) {
+				LOG.warn("=====================================================");
+				LOG.warn("=== Rabbit: HOST not set");
+				LOG.warn("=====================================================");
+			} else {
+				LOG.info("Rabbit host:{}", host);
+			}
+		}
+		return this.host;
 	}
 
 	private String getUser() {
