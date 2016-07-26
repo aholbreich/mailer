@@ -72,7 +72,7 @@ public class MqListener {
 				LOG.warn("Not parsable Media Type {}",ct);
 			}
 		}
-		LOG.debug("Using ContentType:{}", result);
+		LOG.info("Using ContentType:{}", result);
 		return result;
 	}
 
