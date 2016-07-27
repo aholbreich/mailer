@@ -4,7 +4,7 @@
 
 	<groupId>n2ru</groupId>
 	<artifactId>mailer</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>0.0.4-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>mailer</name>
@@ -52,7 +52,7 @@
 		<dependency>
 			<groupId>com.sendgrid</groupId>
 			<artifactId>sendgrid-java</artifactId>
-			<version>3.0.3</version>
+			<version>3.0.6</version>
 		</dependency>
 	</dependencies>
 
