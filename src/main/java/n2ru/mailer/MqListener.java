@@ -31,9 +31,10 @@ public class MqListener {
 	@Autowired
 	private SendGrid sendGrid;
 
-	@Autowired private TextHelper textHelper;
-	
-	// {"to":"test@test.land", "subject":"test subject", "body":"test Body"}
+	@Autowired
+	private TextHelper textHelper;
+
+	// {"to":"test@test.land", "subject":"test subject", "body":"test Body", "contentType":"text/plain"}
 	@RabbitListener(queues = "mailOutQueue")
 	public void processQueue1(@Payload MailRequest request) {
 		LOG.info("Received from queue {}", request);
@@ -48,20 +49,18 @@ public class MqListener {
 	public void sendEmail(MailRequest request) {
 
 		Content content = new Content(checkAndGetContentType(request.getContentType()), request.getBody());
-
 		Mail mail = new Mail(DEFAULT_FROM, textHelper.pruneSubject(request.getSubject()), new Email(request.getTo()), content);
 		includeBCCIfIProvided(mail);
 		sendToSendGrid(mail);
-
 	}
 
 	private void includeBCCIfIProvided(Mail mail) {
 		String devBCC = System.getenv("SENDGRID_DEV_BCC");
-		if (devBCC != null) {
+		Personalization personalization = mail.personalization.get(0);
+		if (devBCC != null && personalization != null) {
 			LOG.warn("Including BCC {}", devBCC);
-			Personalization personalization = new Personalization();
 			personalization.addBcc(new Email(devBCC));
-			mail.addPersonalization(personalization);
+
 		}
 	}
 
@@ -72,7 +71,7 @@ public class MqListener {
 				MediaType.parseMediaType(ct);
 				result = ct;
 			} catch (InvalidMediaTypeException e) {
-				LOG.warn("Not parsable Media Type {}",ct);
+				LOG.warn("Not parsable Media Type {}", ct);
 			}
 		}
 		LOG.info("Using ContentType:{}", result);
